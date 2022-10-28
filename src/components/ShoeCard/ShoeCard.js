@@ -35,15 +35,17 @@ const ShoeCard = ({
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
+          {variant !== 'default' && <Flair variant={variant}>{(variant === 'on-sale') ? 'Sale' : 'Just Released!'}</Flair>}
           <Image alt="" src={imageSrc} />
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price variant={variant}>{formatPrice(price)}</Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          {variant === 'on-sale' && <Price sale>{formatPrice(salePrice)}</Price>}
         </Row>
       </Wrapper>
     </Link>
@@ -51,20 +53,29 @@ const ShoeCard = ({
 };
 
 const Link = styled.a`
+  flex: 1 1 340px;
   text-decoration: none;
   color: inherit;
 `;
 
-const Wrapper = styled.article``;
+const Wrapper = styled.article`
+display: flex;
+flex-direction: column;
+`;
 
 const ImageWrapper = styled.div`
   position: relative;
 `;
 
-const Image = styled.img``;
+const Image = styled.img`
+  border-radius: 16px 16px 4px 4px;
+  width: 100%;
+`;
 
 const Row = styled.div`
   font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Name = styled.h3`
@@ -72,7 +83,10 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  color: ${p => (p.variant === 'on-sale') ? COLORS.gray[700] : ((p.sale)) ? COLORS.primary : COLORS.gray[900]};
+  text-decoration: ${p => (p.variant === 'on-sale') ? 'line-through' : 'none'};
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
@@ -81,6 +95,18 @@ const ColorInfo = styled.p`
 const SalePrice = styled.span`
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
+`;
+
+const Flair = styled.div`
+    background: ${p => (p.variant === 'on-sale') ? COLORS.primary : COLORS.secondary};
+    border-radius: 2px;
+    color: ${COLORS.white};
+    font-size: calc(14 / 16) rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    position: absolute;
+    right: -4px;
+    top: 12px;
 `;
 
 export default ShoeCard;
