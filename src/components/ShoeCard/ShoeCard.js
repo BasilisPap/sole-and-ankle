@@ -35,17 +35,21 @@ const ShoeCard = ({
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
-          {variant !== 'default' && <Flair variant={variant}>{(variant === 'on-sale') ? 'Sale' : 'Just Released!'}</Flair>}
           <Image alt="" src={imageSrc} />
+          {variant === 'on-sale' && <SaleFlair>Sale</SaleFlair>}
+          {variant === 'new-release' && <NewFlair>Just Released!</NewFlair>}
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price variant={variant}>{formatPrice(price)}</Price>
+          <Price style={{
+            '--color': variant === 'on-sale' ? COLORS.gray[700] : undefined,
+            '--text-decoration': variant === 'on-sale' ? 'line-through' : undefined
+          }}>{formatPrice(price)}</Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
-          {variant === 'on-sale' && <Price sale>{formatPrice(salePrice)}</Price>}
+          {variant === 'on-sale' && <SalePrice>{formatPrice(salePrice)}</SalePrice>}
         </Row>
       </Wrapper>
     </Link>
@@ -53,7 +57,6 @@ const ShoeCard = ({
 };
 
 const Link = styled.a`
-  flex: 1 1 340px;
   text-decoration: none;
   color: inherit;
 `;
@@ -81,11 +84,12 @@ const Row = styled.div`
 const Name = styled.h3`
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.gray[900]};
+  margin-right: 8px;
 `;
 
 const Price = styled.span`
-  color: ${p => (p.variant === 'on-sale') ? COLORS.gray[700] : ((p.sale)) ? COLORS.primary : COLORS.gray[900]};
-  text-decoration: ${p => (p.variant === 'on-sale') ? 'line-through' : 'none'};
+  color: var(--color);
+  text-decoration: var(--text-decoration);
 `;
 
 const ColorInfo = styled.p`
@@ -98,15 +102,24 @@ const SalePrice = styled.span`
 `;
 
 const Flair = styled.div`
-    background: ${p => (p.variant === 'on-sale') ? COLORS.primary : COLORS.secondary};
-    border-radius: 2px;
+    border-radius: 4px;
     color: ${COLORS.white};
-    font-size: calc(14 / 16) rem;
-    font-weight: 700;
-    padding: 5px 10px;
+    font-size: ${14/16}rem;
+    font-weight: ${WEIGHTS.bold};
+    height: 32px;
+    line-height: 32px;
+    padding: 0 10px;
     position: absolute;
     right: -4px;
     top: 12px;
 `;
+
+const SaleFlair = styled(Flair)`
+    background: ${COLORS.primary};
+`
+
+const NewFlair = styled(Flair)`
+    background: ${COLORS.secondary};
+`
 
 export default ShoeCard;
